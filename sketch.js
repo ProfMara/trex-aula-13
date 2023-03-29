@@ -1,50 +1,64 @@
 var soloSprite, soloImagem;
-var trexSprite, trexAnimacao;
+//é aqui que cria a variável
+var trex, trexAnimacao;
+var solo;
+var nuvemImagem;
 
-
-var nuvemImagem, nuvemSprite;
-
+//nessa função, carrega-se arquivos de mídia
 function preload() {
-    soloImagem = loadImage("solo.png");
+    //é assim que carrega a animação
     trexAnimacao = loadAnimation("trex1.png","trex2.png","trex3.png");
-    nuvemImagem = loadImage("nuvem.png");
+    //carregar a imagem do solo
+    soloImagem = loadImage("solo.png");
+    //carregar a imagem da nuvem
+
+
 }
 
 
 function setup() {
     createCanvas(600, 200);
-    
-    soloSprite = createSprite(300, 180, 300, 40);
-    soloSprite.addImage(soloImagem);
-    //adicionar velocidade para a sprite
-    soloSprite.velocityX = -3;
+    //é aqui que cria as sprites
+    //solo
+    solo = createSprite(300,180,600, 20);
+    solo.addImage(soloImagem);
+    solo.velocityX = -3;
 
-    trexSprite = createSprite(50,170,50,50);
-    trexSprite.addAnimation("correndo",trexAnimacao);
-    trexSprite.scale=0.5;
- 
+    //solo invisível
+    soloInvisivel = createSprite(300,195,600,20);
+    soloInvisivel.visible = false;
+
+    //trex
+    trex = createSprite(50,170,50,50);
+    trex.addAnimation("correndo",trexAnimacao);
+    trex.scale=0.5;
+
+
 }
 
 
 function draw() {
-    background("cyan")
-    
-    if(soloSprite.x < 0 ){
-        soloSprite.x = 300;
-    }
-    //verifica se apertou espaço
-    if(keyDown("space")){
-        //manda o trex para cima
-        trexSprite.velocityY = -10;
-    }
-    
-    //dá gravidade para o trex
-    trexSprite.velocityY += 0.8;
+    //pinta o fundo de uma cor
+    background("white");
 
+    //verifica se a pessoa apertou a tecla espaço
+    if(keyDown("space") && trex.isTouching(solo) ){
+        //dá velocidade para o trex voar
+        trex.velocityY = -10;
+    }
+
+    //esse código dá gravidade para o trex cair
+    trex.velocityY += 0.8;
     //manda o trex colidir com o solo
-    trexSprite.collide(soloSprite)
-    
+    trex.collide(soloInvisivel);
 
+    //checa se o solo saiu da tela
+    if(solo.x < 0){
+        //se sim, ele volta para a metade do jogo 
+        //e cria um loop infinito
+        solo.x = width/2;
+    }
+
+    //desenha as sprites
     drawSprites();
 }
-
